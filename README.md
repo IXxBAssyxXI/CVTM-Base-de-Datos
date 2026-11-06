@@ -38,7 +38,7 @@ Implementación en **MySQL 8.0** de la base de datos `veterinaria_db` para un ce
 Requisitos: MySQL 8.0 y un cliente (consola `mysql` o MySQL Workbench).
 
 ```bash
-git clone https://github.com/<tu-usuario>/cvtm-veterinaria-db.git
+git clone https://github.com/benjamingonzalezc/cvtm-veterinaria-db.git
 cd cvtm-veterinaria-db
 ./run_all.sh root
 ```
