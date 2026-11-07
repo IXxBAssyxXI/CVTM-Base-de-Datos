@@ -1,5 +1,5 @@
 -- CVTM | Parte B: restricciones y claves | MySQL 8.0
--- Ejecutar DESPUÉS del CREATE TABLE de las 13 tablas de la Parte A.
+-- Ejecutar DESPUÉS del CREATE TABLE de las 14 tablas de la Parte A.
 -- Las PK y NOT NULL existentes se conservan: no se vuelven a declarar.
 -- Validar previamente que los datos existentes cumplan las restricciones.
 USE veterinaria_db;
@@ -88,10 +88,29 @@ ALTER TABLE `Detalle_Prestacion`
     REFERENCES `Prestacion` (`ID_Prestacion`)
     ON UPDATE CASCADE ON DELETE RESTRICT;
 
+-- Historial de responsables de la mascota.
+ALTER TABLE `Historial_Responsable`
+    ADD CONSTRAINT `fk_hist_mascota`
+    FOREIGN KEY (`ID_Mascota`)
+    REFERENCES `Mascota` (`ID_Mascota`)
+    ON UPDATE CASCADE ON DELETE RESTRICT;
+
+ALTER TABLE `Historial_Responsable`
+    ADD CONSTRAINT `fk_hist_cliente`
+    FOREIGN KEY (`Rut_Cliente`)
+    REFERENCES `Cliente` (`Rut_Cliente`)
+    ON UPDATE CASCADE ON DELETE RESTRICT;
+
 -- Relación 1:0..1 entre Cita y Ficha_Medica.
 ALTER TABLE `Ficha_Medica`
     ADD CONSTRAINT `uq_ficha_cita`
     UNIQUE (`N_Cita`);
+
+-- Un veterinario no puede tener dos citas activas en el mismo horario.
+-- Bloque_Activo es NULL si la cita está cancelada o ausente (libera el bloque).
+ALTER TABLE `Cita`
+    ADD CONSTRAINT `uq_cita_vet_bloque`
+    UNIQUE (`Rut_Veterinario`, `Bloque_Activo`);
 
 ALTER TABLE `Mascota`
     ADD CONSTRAINT `chk_mascota_sexo`
@@ -115,7 +134,7 @@ ALTER TABLE `Producto`
 
 ALTER TABLE `Cita`
     ADD CONSTRAINT `chk_cita_estado`
-    CHECK (Estado IN ('pendiente','confirmada','atendida'));
+    CHECK (Estado IN ('pendiente','confirmada','atendida','cancelada','ausente'));
 
 ALTER TABLE `Venta`
     ADD CONSTRAINT `chk_venta_monto`
@@ -148,6 +167,10 @@ ALTER TABLE `Detalle_Prestacion`
 ALTER TABLE `Detalle_Prestacion`
     ADD CONSTRAINT `chk_detprest_subtotal`
     CHECK (Subtotal >= 0);
+
+ALTER TABLE `Historial_Responsable`
+    ADD CONSTRAINT `chk_hist_fechas`
+    CHECK (Fecha_Fin IS NULL OR Fecha_Fin >= Fecha_Inicio);
 
 -- DEFAULT propuestos: aplicables sin modificar la nulidad existente.
 ALTER TABLE `Cita`
