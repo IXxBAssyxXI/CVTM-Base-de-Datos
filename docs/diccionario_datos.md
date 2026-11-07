@@ -1,6 +1,6 @@
 # Diccionario de datos
 
-Modelo físico de la base `veterinaria_db` (MySQL 8.0). 13 tablas.
+Modelo físico de la base `veterinaria_db` (MySQL 8.0). 14 tablas.
 
 
 ## Cliente
@@ -78,9 +78,10 @@ Modelo físico de la base `veterinaria_db` (MySQL 8.0). 13 tablas.
 |---|---|---|---|---|
 | N_Cita | INT | PK | NOT NULL | Identificador único de la cita médica |
 | Fecha_Hora | DATETIME | Atributo | NOT NULL | Fecha y hora reservada |
-| Estado | VARCHAR(20) | Atributo | NOT NULL | Estado (pendiente, confirmada, atendida) |
+| Estado | VARCHAR(20) | Atributo | NOT NULL | Estado (pendiente, confirmada, atendida, cancelada, ausente) |
 | ID_Mascota | INT | FK base | NOT NULL | Mascota citada (referencia a Mascota) |
 | Rut_Veterinario | VARCHAR(12) | FK base | NOT NULL | Veterinario a cargo (referencia a Veterinario) |
+| Bloque_Activo | DATETIME | Columna generada | NULL | Igual a Fecha_Hora si la cita está activa; NULL si está cancelada o ausente |
 
 ## Venta
 
@@ -134,3 +135,13 @@ Modelo físico de la base `veterinaria_db` (MySQL 8.0). 13 tablas.
 | Cantidad | INT | Atributo | NOT NULL | Cantidad de prestaciones |
 | Precio_Aplicado | DECIMAL(10,2) | Atributo | NOT NULL | Arancel efectivo cobrado |
 | Subtotal | DECIMAL(10,2) | Atributo | NOT NULL | Cantidad x Precio aplicado |
+
+## Historial_Responsable
+
+| Atributo | Tipo de Dato (MySQL 8.0) | Clave / Rol | Nulidad | Descripción / Dominio |
+|---|---|---|---|---|
+| ID_Historial | INT | PK | NOT NULL | Identificador autoincremental del registro |
+| ID_Mascota | INT | FK base | NOT NULL | Mascota asociada (referencia a Mascota) |
+| Rut_Cliente | VARCHAR(12) | FK base | NOT NULL | Cliente responsable en ese período (referencia a Cliente) |
+| Fecha_Inicio | DATE | Atributo | NOT NULL | Fecha desde la que es responsable |
+| Fecha_Fin | DATE | Atributo | NULL | Fecha de término; NULL si es el responsable actual (≥ Fecha_Inicio) |
