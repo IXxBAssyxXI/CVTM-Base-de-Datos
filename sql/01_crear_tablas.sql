@@ -1,4 +1,4 @@
--- CVTM | Parte A: creación de la base de datos y las 13 tablas | MySQL 8.0
+-- CVTM | Parte A: creación de la base de datos y las 14 tablas | MySQL 8.0
 
 CREATE DATABASE IF NOT EXISTS veterinaria_db;
 USE veterinaria_db;
@@ -46,6 +46,15 @@ Rut_Cliente VARCHAR(12) NOT NULL,
 PRIMARY KEY (ID_Mascota)
 );
 
+CREATE TABLE Historial_Responsable (
+ID_Historial INT NOT NULL AUTO_INCREMENT,
+ID_Mascota INT NOT NULL,
+Rut_Cliente VARCHAR(12) NOT NULL,
+Fecha_Inicio DATE NOT NULL,
+Fecha_Fin DATE,
+PRIMARY KEY (ID_Historial)
+);
+
 CREATE TABLE Prestacion (
 ID_Prestacion INT NOT NULL AUTO_INCREMENT,
 Nombre_Prestacion VARCHAR(100) NOT NULL,
@@ -71,6 +80,8 @@ Fecha_Hora DATETIME NOT NULL,
 Estado VARCHAR(20) NOT NULL,
 ID_Mascota INT NOT NULL,
 Rut_Veterinario VARCHAR(12) NOT NULL,
+Bloque_Activo DATETIME GENERATED ALWAYS AS
+  (IF(Estado IN ('cancelada','ausente'), NULL, Fecha_Hora)) STORED,
 PRIMARY KEY (N_Cita)
 );
 
