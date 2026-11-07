@@ -12,9 +12,9 @@ Implementación en **MySQL 8.0** de la base de datos `veterinaria_db` para un ce
 
 ## Qué incluye
 
-- **13 tablas**: Cliente, Veterinario, Cajero, Proveedor, Mascota, Prestacion, Producto, Cita, Venta, Ficha_Medica, Inventario, Detalle_Venta y Detalle_Prestacion.
-- **14 claves foráneas** con `ON UPDATE CASCADE` y `ON DELETE RESTRICT` / `SET NULL` según el caso.
-- **14 restricciones CHECK**, 1 `UNIQUE` (una cita origina como máximo una ficha médica) y 2 valores por defecto (`Cita.Estado = 'pendiente'`, `Producto.Stock = 0`).
+- **14 tablas**: Cliente, Veterinario, Cajero, Proveedor, Mascota, Prestacion, Producto, Cita, Venta, Ficha_Medica, Inventario, Detalle_Venta y Detalle_Prestacion.
+- **16 claves foráneas** con `ON UPDATE CASCADE` y `ON DELETE RESTRICT` / `SET NULL` según el caso.
+- **15 restricciones CHECK**, 2 `UNIQUE` (una cita origina como máximo una ficha médica) y 2 valores por defecto (`Cita.Estado = 'pendiente'`, `Producto.Stock = 0`).
 - Datos de prueba, consultas de verificación y una batería de 23 pruebas que deben fallar (P1 a P23).
 
 ## Estructura
@@ -47,8 +47,8 @@ O manualmente, **en este orden y cada script completo de una vez**:
 
 | Paso | Script | Resultado esperado |
 | --- | --- | --- |
-| 1 | `sql/01_crear_tablas.sql` | `SHOW TABLES;` muestra 13 tablas |
-| 2 | `sql/02_restricciones.sql` | 14 CHECK, 14 FOREIGN KEY, 13 PRIMARY KEY y 1 UNIQUE |
+| 1 | `sql/01_crear_tablas.sql` | `SHOW TABLES;` muestra 14 tablas |
+| 2 | `sql/02_restricciones.sql` | 15 CHECK, 16 FOREIGN KEY, 14 PRIMARY KEY y 2 UNIQUE |
 | 3 | `sql/03_datos_prueba.sql` | 3 filas en cada tabla |
 | 4 | `sql/04_consultas_verificacion.sql` | Citas, fichas y ventas relacionadas |
 
@@ -81,8 +81,8 @@ y volver al paso 1.
 
 - No se verifica que `Subtotal = Cantidad × Precio`.
 - `Stock` no se actualiza automáticamente con los movimientos de `Inventario`.
-- La ficha médica no exige que la firme el mismo veterinario de la cita.
-- No se impide que un veterinario tenga dos citas a la misma hora.
+- La ficha médica no exige que la firme el mismo veterinario de la cita..
+- -La colisión horaria solo se detecta cuando las citas comienzan a la misma hora exacta, no ante traslapes por duración.
 - `UNIQUE (N_Cita)` limita a una ficha por cita, pero no obliga a que toda cita tenga ficha.
 
 Estas reglas requerirían triggers o restricciones adicionales y se dejan documentadas como posibles mejoras.
